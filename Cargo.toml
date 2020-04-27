@@ -1,5 +1,5 @@
 [package]
-name = "serde_json"
+name = "serde_orjson"
 version = "1.0.52" # remember to update html_root_url
 authors = ["Erick Tryzelaar <erick.tryzelaar@gmail.com>", "David Tolnay <dtolnay@gmail.com>"]
 license = "MIT OR Apache-2.0"
@@ -11,6 +11,9 @@ categories = ["encoding"]
 readme = "README.md"
 include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 edition = "2018"
+
+[lib]
+name = "serde_json"
 
 [badges]
 travis-ci = { repository = "serde-rs/json" }
