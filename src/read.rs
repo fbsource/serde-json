@@ -55,6 +55,9 @@ pub trait Read<'de>: private::Sealed {
     #[doc(hidden)]
     fn byte_offset(&self) -> usize;
 
+    #[doc(hidden)]
+    fn slice_looking_back(&self, start: usize) -> Option<&[u8]>;
+
     /// Assumes the previous byte was a quotation mark. Parses a JSON-escaped
     /// string until the next quotation mark using the given scratch space if
     /// necessary. The scratch space is initially empty.
@@ -329,6 +332,10 @@ where
         }
     }
 
+    fn slice_looking_back(&self, _start: usize) -> Option<&[u8]> {
+        unimplemented!()
+    }
+
     fn parse_str<'s>(&'s mut self, scratch: &'s mut Vec<u8>) -> Result<Reference<'de, 's, str>> {
         self.parse_str_bytes(scratch, true, as_str)
             .map(Reference::Copied)
@@ -539,6 +546,14 @@ impl<'a> Read<'a> for SliceRead<'a> {
         self.index
     }
 
+    fn slice_looking_back(&self, start: usize) -> Option<&[u8]> {
+        if self.byte_offset() > start {
+            Some(&self.slice[start..self.index])
+        } else {
+            None
+        }
+    }
+
     fn parse_str<'s>(&'s mut self, scratch: &'s mut Vec<u8>) -> Result<Reference<'a, 's, str>> {
         self.parse_str_bytes(scratch, true, as_str)
     }
@@ -669,6 +684,10 @@ impl<'a> Read<'a> for StrRead<'a> {
 
     fn byte_offset(&self) -> usize {
         self.delegate.byte_offset()
+    }
+
+    fn slice_looking_back(&self, start: usize) -> Option<&[u8]> {
+        self.delegate.slice_looking_back(start)
     }
 
     fn parse_str<'s>(&'s mut self, scratch: &'s mut Vec<u8>) -> Result<Reference<'a, 's, str>> {

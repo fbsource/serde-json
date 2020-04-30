@@ -16,6 +16,7 @@ use serde::de::{IntoDeserializer, MapAccess};
 pub(crate) const TOKEN: &str = "$serde_json::private::Number";
 
 /// Represents a JSON number, whether integer or floating point.
+#[repr(transparent)]
 #[derive(Clone, Eq, PartialEq)]
 pub struct Number {
     n: N,
